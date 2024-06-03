@@ -4202,5 +4202,24 @@ describe('getData', () => {
 ```javascript
 // render(<App/>) метод для тестирование react компонентов, предеаеться компонет который хотим протестировать
 // let helloWorld=screen.getByText(/hello world/i) получаем элемент с помощью метода screen передовая текст, i-означает игнорирование регистра. Идет поиск по тексту передовая в метод регулярной выражение
+//const button = screen.getByRole('button'); поиск по роли (роли можно назначать самим , на div допусти button )
+// const input = screen.getByPlaceholderText(/input value.../i); ? поиск по placeholder
 // expect(helloWorld).toBeInTheDocument() проверяем наличие элемента в DOM
+// методы screen findBy/All(асинхроннеы), getBy/All(используеться для 100% получение какогото элемента иначе велзит ошибка), queryBy/All(обычно используеться для уточнения что элемнта нет на странице, не пробрасывает ошибку если не нашел элемент)
+// const helloWorldElem = screen.queryByText(/Hello2/i); expect(helloWorldElem).toBeNull(); проверяем что такого элемента на страницы нет
+// screen.debug();-вывод HTML дерева
+// expect(helloWorldElem).toHaveStyle({ color: 'red' }); проверка что у элемента есть стили
+
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const helloWorldElem = screen.getByText(/Hello World/i);
+  const button = screen.getByRole('button');
+  const input = screen.getByPlaceholderText(/input value.../i);
+  expect(helloWorldElem).toBeInTheDocument();
+  expect(button).toBeInTheDocument();
+  expect(input).toMatchSnapshot();
+	 screen.debug();
 ```
