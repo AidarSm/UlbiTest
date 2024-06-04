@@ -592,7 +592,7 @@ npx sequelize init - инициализация сикволайза
 - 5 git remote add origin <url> - привязка локального репозитория к удаленному, где url адрес репозитория
 - 6 git push <origin main> - используется для отправки изменений, внесенных в локальный репозиторий, на удаленный репозиторий в Git.
 - Потом тим лид мерджет ,чтобы соеденить ветки.
-- git fetch -подтягиваем чужие ветки если проект не замерджен.
+- git fetch origin -подтягиваем все изменения с удаленного репозитория в локальный.
 - 7 git pull origin master -Команда "git pull" используется для получения последних изменений из удаленного репозитория и объединения их с т екущей локальной веткой в Git.
 - 8 git checkout -b <name branch> - создание и переключение в новую ветку.
 - 9 git clone <url> -копирования проекта из удаленного репозитория.
@@ -4074,12 +4074,12 @@ export default EditableSpan;
 // .toBe(ожидаемый результат) (быть) метод в который передаем ожидаемый результат
 // .toBeLessThan(значение), проверяем что число которые мы получи меньше передаваемого в скобках
 // .toBeGreaterThan(), проверяем что число которые мы получи больше передаваемого в скобках
-// .not.toBeUndefined(), проверяем чтоожидаемое значение не undefined
+// .not.toBeUndefined(), проверяем что ожидаемое значение не undefined
 // .toEqual (к равному) метод проводящий глубокое сравнение(рекурсивное ), для объектов и массивов
 // .not.toEqual , с помощоью not мы проверяем что результат не будет равен не правильному результату
 // const spyMathPow = jest.spyOn(Math, 'pow'); создаем моковый метод , объект Math c методом pow
 // expect(spyMathPow).toBeCalledTimes(1) проверяем количество вызовов метода (один раз)
-// beforeEach(()=>{ у него есть метод }) функция используеться для проихведения каких-то действия до проведения каждого из теста,вызываеться перед каждыйм тестом
+// beforeEach(()=>{ у него есть метод }) функция используеться для проведения каких-то действия до проведения каждого из теста,вызываеться перед каждыйм тестом
 // beforeAll(()=>{}), аналогинчо beforeEach но вызывыаеться перед всеми тестами один раз
 // afterEach(()=>{jest.clearAllMocks();}), тоже самое что before но после каждого теста
 // вызываем у глобального объект jest метод clearAllMocks(), очищаем моковые данные
@@ -4188,7 +4188,7 @@ describe('getData', () => {
   });
 
   test('Корректное значение', async () => {
-    axios.get.mockReturnValue(response);
+    axios.get.mockResolvedValue(response);
     const data = await getData();
     expect(axios.get).toBeCalledTimes(1); //проверяем что axios вызовиться один раз
     expect(data).toEqual(['1', '2', '3']); // проверяем что получим массив
@@ -4197,29 +4197,68 @@ describe('getData', () => {
 });
 ```
 
-### Тестирование React-librery
+### Тестирование React-library
 
 ```javascript
 // render(<App/>) метод для тестирование react компонентов, предеаеться компонет который хотим протестировать
 // let helloWorld=screen.getByText(/hello world/i) получаем элемент с помощью метода screen передовая текст, i-означает игнорирование регистра. Идет поиск по тексту передовая в метод регулярной выражение
 //const button = screen.getByRole('button'); поиск по роли (роли можно назначать самим , на div допусти button )
-// const input = screen.getByPlaceholderText(/input value.../i); ? поиск по placeholder
+// const input = screen.getByPlaceholderText(/input value.../i);поиск по placeholder
 // expect(helloWorld).toBeInTheDocument() проверяем наличие элемента в DOM
-// методы screen findBy/All(асинхроннеы), getBy/All(используеться для 100% получение какогото элемента иначе велзит ошибка), queryBy/All(обычно используеться для уточнения что элемнта нет на странице, не пробрасывает ошибку если не нашел элемент)
+// методы screen findBy/All(асинхроннеы), getBy/All(используеться для 100% получение какогото элемента иначе вылезит ошибка), queryBy/All(обычно используеться для уточнения что элемнта нет на странице, не пробрасывает ошибку если не нашел элемент)
 // const helloWorldElem = screen.queryByText(/Hello2/i); expect(helloWorldElem).toBeNull(); проверяем что такого элемента на страницы нет
 // screen.debug();-вывод HTML дерева
 // expect(helloWorldElem).toHaveStyle({ color: 'red' }); проверка что у элемента есть стили
-
-import { render, screen } from '@testing-library/react';
+//  expect(screen.queryByTestId('toggle-element')) .toBeInTheDocument(); проверяем наличие элемента на странице, передовая в expect найденный элемент по data-testid="toggle-element", чтобы получать всгда актуальное состояние
+// fireEvent.click(btn); с помощью объект fireEvent мы можем вызывать события на элементах (искуственное событие)
+//userEvent.type(input, '2'); (воспроизводит полное поведение пользователя , отраб. событие нажатие на клавиши и т.д. )
+// expect(screen.getByTestId('div-element')).toContainHTML(''); проверяем что у элемента есть содержимое (изначально пустое )
+//fireEvent.change(input, { target: { value: '2' } });  вызываем событие change на input и передаем новое значение
+// expect(input).toHaveValue('2'); проверяем соответвие содержимого input
+// expect(screen.getByTestId('div-element')).toHaveTextContent('2'); проверяем что у элемента есть содержимое
+import { fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const helloWorldElem = screen.getByText(/Hello World/i);
-  const button = screen.getByRole('button');
-  const input = screen.getByPlaceholderText(/input value.../i);
-  expect(helloWorldElem).toBeInTheDocument();
-  expect(button).toBeInTheDocument();
-  expect(input).toMatchSnapshot();
-	 screen.debug();
+describe('TEST APP', () => {
+  test('renders learn react', async () => {
+    render(<App />);
+    // const helloWorldElem = screen.queryByText(/Hello2/i);
+    // expect(helloWorldElem).toBeNull();
+    screen.debug();
+    const helloWorldElem = await screen.findByText(/data/i);
+    expect(helloWorldElem).toBeInTheDocument();
+    expect(helloWorldElem).toHaveStyle({ color: 'red' });
+    screen.debug();
+  });
+
+  test('renders learn react link', () => {
+    render(<App />);
+    const helloWorldElem = screen.getByText(/Hello World/i);
+    const button = screen.getByRole('button');
+    const input = screen.getByPlaceholderText(/input value.../i);
+    expect(helloWorldElem).toBeInTheDocument();
+    expect(button).toBeInTheDocument();
+    expect(input).toBeInTheDocument();
+  });
+
+  test('click button', () => {
+    render(<App />);
+    const btn = screen.getByTestId('toggle-btn');
+    expect(screen.queryByTestId('toggle-element')).toBeNull();
+    fireEvent.click(btn);
+    expect(screen.queryByTestId('toggle-element')).toBeInTheDocument();
+    fireEvent.click(btn);
+    expect(screen.queryByTestId('toggle-element')).toBeNull();
+  });
+
+  test('change input', () => {
+    render(<App />);
+    const input = screen.getByTestId('inputElement');
+    expect(screen.getByTestId('div-element')).toContainHTML('');
+    fireEvent.change(input, { target: { value: '2' } });
+    expect(input).toHaveValue('2');
+    expect(screen.getByTestId('div-element')).toHaveTextContent('2');
+  });
+});
 ```
