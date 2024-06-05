@@ -3,6 +3,8 @@ import Users from './Users';
 import UsersDetailsPage from '../pages/UsersDetailsPage';
 import axios from 'axios';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import AppRouter from '../router/AppRouter';
+import { renderWithRouter } from '../tests/helpers/renderWithRouter';
 
 jest.mock('axios', () => ({
   get: jest.fn(),
@@ -40,15 +42,8 @@ describe('TEST USERS', () => {
   });
   test('check redirect to details page', async () => {
     axios.get.mockResolvedValue(response);
-    render(
-      <MemoryRouter initialEntries={['/users']}>
-        <Routes>
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/:id" element={<UsersDetailsPage />} />
-          <Users />
-        </Routes>
-      </MemoryRouter>,
-    );
+    // renderWithRouter(null, '/users');
+    renderWithRouter(null, <Users />);
     const users = await screen.findAllByTestId('user-item');
     expect(users.length).toBe(3);
     //  expect(users[0]).toHaveAttribute('href', '/users/1');

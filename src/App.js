@@ -1,30 +1,13 @@
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import AboutPage from './pages/AboutPage';
-import MainPage from './pages/MainPage';
-import NotFoundPage from './pages/NotFoundPage';
-import Users from './users/Users';
-import UsersDetailsPage from './pages/UsersDetailsPage';
+import Navbar from './components/Navbar/Navbar';
+
+import AppRouter from './router/AppRouter';
 
 const App = () => {
   return (
     <div>
-      <Link data-testid="main-link" to="/">
-        main
-      </Link>{' '}
-      <Link data-testid="about-link" to="/about">
-        about
-      </Link>
-      <Link data-testid="users-link" to="/users">
-        users
-      </Link>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<UsersDetailsPage />} />
-        <Route path="/*" element={<NotFoundPage />} />
-      </Routes>
+      <Navbar />
+      <AppRouter />
     </div>
   );
 };

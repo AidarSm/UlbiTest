@@ -4281,6 +4281,37 @@ describe('Router', () => {
     fireEvent.click(aboutLink);
     expect(aboutLink).toBeInTheDocument();
   });
-  
+});
+
+test('check redirect to details page', async () => {
+  axios.get.mockResolvedValue(response);
+  render(
+    <MemoryRouter initialEntries={['/users']}>
+      <Routes>
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UsersDetailsPage />} />
+        <Users />
+      </Routes>
+    </MemoryRouter>,
+  );
+  const users = await screen.findAllByTestId('user-item');
+  expect(users.length).toBe(3);
+  //  expect(users[0]).toHaveAttribute('href', '/users/1');
+  fireEvent.click(users[0]);
+  expect(screen.getByTestId('user-page')).toBeInTheDocument();
+  //  expect(window.location.pathname).toBe('/users/1');
+});
+
+// С созданием хелреа и выноса render весь туда, также вынесли router в компонент AppRouter
+test('check redirect to details page', async () => {
+  axios.get.mockResolvedValue(response);
+  // renderWithRouter(null, '/users');
+  renderWithRouter(null, <Users />);
+  const users = await screen.findAllByTestId('user-item');
+  expect(users.length).toBe(3);
+  //  expect(users[0]).toHaveAttribute('href', '/users/1');
+  fireEvent.click(users[0]);
+  expect(screen.getByTestId('user-page')).toBeInTheDocument();
+  //  expect(window.location.pathname).toBe('/users/1');
 });
 ```
