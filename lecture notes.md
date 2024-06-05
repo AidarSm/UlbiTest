@@ -4216,6 +4216,8 @@ describe('getData', () => {
 //fireEvent.change(input, { target: { value: '2' } });  вызываем событие change на input и передаем новое значение
 // expect(input).toHaveValue('2'); проверяем соответвие содержимого input
 // expect(screen.getByTestId('div-element')).toHaveTextContent('2'); проверяем что у элемента есть содержимое
+//<MemoryRouter> для обертки тестированного компонента отвечающего за маршрутизацию
+
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
@@ -4260,5 +4262,25 @@ describe('TEST APP', () => {
     expect(input).toHaveValue('2');
     expect(screen.getByTestId('div-element')).toHaveTextContent('2');
   });
+});
+
+// Тестирование Router (помогает отслеживать изменения в маршруте)
+
+import { MemoryRouter } from 'react-router-dom';
+
+describe('Router', () => {
+  test('Router test', async () => {
+    render(
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>,
+    );
+    const mainLink = screen.getByTestId('main-link');
+    expect(mainLink).toBeInTheDocument();
+    const aboutLink = screen.getByTestId('about-link');
+    fireEvent.click(aboutLink);
+    expect(aboutLink).toBeInTheDocument();
+  });
+  
 });
 ```
