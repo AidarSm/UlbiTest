@@ -1,3 +1,10 @@
-import counterReducer from './slice/counterSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './slice/counter/counterSlice';
 
-const store = createStore({ counter: counterReducer });
+//функция которая возщвращает store с переданным начальным значением
+export const createReduxStore = (initialState = {}) => {
+  return configureStore({
+    reducer: { counter: counterReducer },
+    preloadedState: initialState, // начально значение
+  });
+};

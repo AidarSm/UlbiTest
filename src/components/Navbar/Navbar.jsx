@@ -7,11 +7,17 @@ const Navbar = () => {
       <Link data-testid="main-link" to="/">
         main
       </Link>
+      &nbsp;
       <Link data-testid="about-link" to="/about">
         about
       </Link>
+      &nbsp;
       <Link data-testid="users-link" to="/users">
         users
+      </Link>
+      &nbsp;
+      <Link data-testid="counter-link" to="/counter">
+        counter
       </Link>
     </div>
   );

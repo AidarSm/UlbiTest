@@ -4303,10 +4303,27 @@ test('check redirect to details page', async () => {
 });
 
 // С созданием хелреа и выноса render весь туда, также вынесли router в компонент AppRouter
+renderWithRouter.js;
+
+import { MemoryRouter } from 'react-router-dom';
+import AppRouter from '../../router/AppRouter';
+import { render } from '@testing-library/react';
+
+export const renderWithRouter = (component, initialRoute = '/') => {
+  return render(
+    <MemoryRouter initialEntries={[initialRoute]}>
+      <AppRouter />
+      {component}
+    </MemoryRouter>,
+  );
+};
+
+Users.test.js;
+
 test('check redirect to details page', async () => {
   axios.get.mockResolvedValue(response);
   // renderWithRouter(null, '/users');
-  renderWithRouter(null, <Users />);
+  renderWithRouter(<Users />);
   const users = await screen.findAllByTestId('user-item');
   expect(users.length).toBe(3);
   //  expect(users[0]).toHaveAttribute('href', '/users/1');
@@ -4314,4 +4331,36 @@ test('check redirect to details page', async () => {
   expect(screen.getByTestId('user-page')).toBeInTheDocument();
   //  expect(window.location.pathname).toBe('/users/1');
 });
+
+// Тестируем Navbar , на нажатие на ссылку и переход на соответствующую страницу
+describe('Test-Navbar', () => {
+  test('main link', () => {
+    renderWithRouter(<Navbar />);
+    const mainLink = screen.getByTestId('main-link');
+    fireEvent.click(mainLink);
+    expect(screen.getByTestId('main-page')).toBeInTheDocument();
+  });
+  test('about link', () => {
+    renderWithRouter(<Navbar />);
+    const aboutLink = screen.getByTestId('about-link');
+    fireEvent.click(aboutLink);
+    expect(screen.getByTestId('about-page')).toBeInTheDocument();
+  });
+  test('users link', () => {
+    renderWithRouter(<Navbar />);
+    const userLink = screen.getByTestId('users-link');
+    fireEvent.click(userLink);
+    expect(screen.getByTestId('users-page')).toBeInTheDocument();
+  });
+});
+
+// Типизация redux toolkit
+store.js;
+
+export const store = configureStore({
+  reducer: { counter: counterReducer },
+  preloadedState: { counter: { value: 10000 } }, // начально значение
+});
+
+
 ```

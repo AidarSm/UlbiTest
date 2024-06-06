@@ -1,14 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import Users from './Users';
-import UsersDetailsPage from '../pages/UsersDetailsPage';
 import axios from 'axios';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import AppRouter from '../router/AppRouter';
 import { renderWithRouter } from '../tests/helpers/renderWithRouter';
 
-jest.mock('axios', () => ({
-  get: jest.fn(),
-}));
+jest.mock('axios');
 
 describe('TEST USERS', () => {
   let response;
@@ -33,6 +28,7 @@ describe('TEST USERS', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
   test.skip('check users', async () => {
     axios.get.mockResolvedValue(response);
     render(<Users />);
@@ -43,12 +39,12 @@ describe('TEST USERS', () => {
   test('check redirect to details page', async () => {
     axios.get.mockResolvedValue(response);
     // renderWithRouter(null, '/users');
-    renderWithRouter(null, <Users />);
+    renderWithRouter(<Users />);
     const users = await screen.findAllByTestId('user-item');
     expect(users.length).toBe(3);
-    //  expect(users[0]).toHaveAttribute('href', '/users/1');
+   //  expect(users[0]).toHaveAttribute('href', '/users/1');
     fireEvent.click(users[0]);
     expect(screen.getByTestId('user-page')).toBeInTheDocument();
-    //  expect(window.location.pathname).toBe('/users/1');
+   //  expect(window.location.pathname).toBe('/users/1');
   });
 });
