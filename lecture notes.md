@@ -4057,7 +4057,7 @@ export default EditableSpan;
 
 # Unit test Ulbi TV
 
-### Базовые методы unit тестирования
+### Базовые методы unit тестирования (модульное)
 
 Тесты это ожидание того как должна выполняться функция
 
@@ -4079,6 +4079,7 @@ export default EditableSpan;
 // .not.toEqual , с помощоью not мы проверяем что результат не будет равен не правильному результату
 // const spyMathPow = jest.spyOn(Math, 'pow'); создаем моковый метод , объект Math c методом pow
 // expect(spyMathPow).toBeCalledTimes(1) проверяем количество вызовов метода (один раз)
+// При describe есть даннеы методы:
 // beforeEach(()=>{ у него есть метод }) функция используеться для проведения каких-то действия до проведения каждого из теста,вызываеться перед каждыйм тестом
 // beforeAll(()=>{}), аналогинчо beforeEach но вызывыаеться перед всеми тестами один раз
 // afterEach(()=>{jest.clearAllMocks();}), тоже самое что before но после каждого теста
@@ -4086,7 +4087,44 @@ export default EditableSpan;
 // afterAll(()=>{}), после всех тестов
 // jest.mock('axios'); замоковаем даннеы чтобы при тестирование не шли запросы на стороннние API, а возвращалась заглушка mock
 //  axios.get.mockReturnValue(response); возаращаем mock заглушку с помощью данного метода mockReturnValue(response), response переменная куда присвоили моковые данные
-// expect(data).toMatchSnapshot() с помощью данного метода создаеться отдельный фаил с фиксацией того что нам возвращает функция
+// expect(data).toMatchSnapshot() с помощью данного метода создаеться отдельный фаил с фиксацией того что нам возвращает функция, в случае изменения функции будет выдаваться ошибка, после фиксирования новго значения ошибка пропадет
+
+// Пример тестирования валидации (Квдрат допустимых значений)
+
+describe('validateValue', () => {
+  test('Корректное значение', () => {
+    expect(validateValue(50)).toBe(true);
+  });
+  test('Меньше корректного значения', () => {
+    expect(validateValue(-1)).toBe(false);
+  });
+  test('Больше корректного значения', () => {
+    expect(validateValue(101)).toBe(false);
+  });
+  test('Пограничное значения снизу', () => {
+    expect(validateValue(0)).toBe(true);
+  });
+  test('Пограничное значения сверху', () => {
+    expect(validateValue(100)).toBe(true);
+  });
+});
+
+//Кейс тестирование преобразования массива в строку с помощью toEqual
+describe('mapArrToString', () => {
+  test('Корректное значение', () => {
+    expect(mapArrToString([1, 2, 3])).toEqual(['1', '2', '3']);
+  });
+  test('Мешанина', () => {
+    expect(mapArrToString([1, 2, 3, null, undefined, 'dasdas'])).toEqual(['1', '2', '3']);
+  });
+  test('Пустой массив', () => {
+    expect(mapArrToString([])).toEqual([]);
+  });
+  test('Отрицание', () => {
+    expect(mapArrToString([1, 2, 3])).not.toEqual([1, 2, 3, 4]);
+  });
+});
+
 
 describe('square', () => {
 	let mockValue
@@ -4097,7 +4135,7 @@ describe('square', () => {
     expect(square(2)).toBe(4);
     expect(square(2)).toBeLessThan(5);
     expect(square(2)).toBeGreaterThan(3);
-    expect(square(2)).not.toBeUndefined();
+    expect(square(2)).not.toBeUndefined();// проверяем что ожидаемое значение не равно undefined
   });
 	afterEach(()=>{ // можно дупустим удалить из БД
 	})
@@ -4137,6 +4175,9 @@ description('square', () => {
 ```
 
 ### Тестирование асинхронных функций
+
+- проверка количество вызовов функции
+- проверка возвращаемого значения функции
 
 1.
 
@@ -4199,15 +4240,22 @@ describe('getData', () => {
 
 ### Тестирование React-library
 
+- проверка наличия элементов на странице
+- проверка нажатия на элемент на странице и вывод нового элмента null/ появился
+- проверка стилей элемента
+- проверка связанного инпута
+- проверка асихронного запроса, что при отправки его приходят данные с сервера и отображаются на странице
+- проверка перехода между страницами при нажатие на ссылку
+
 ```javascript
-// render(<App/>) метод для тестирование react компонентов, предеаеться компонет который хотим протестировать
+// render(<App/>) метод для тестирование react компонентов, предеаеться компонет который хотим протестировать, ренедрим его
 // let helloWorld=screen.getByText(/hello world/i) получаем элемент с помощью метода screen передовая текст, i-означает игнорирование регистра. Идет поиск по тексту передовая в метод регулярной выражение
 //const button = screen.getByRole('button'); поиск по роли (роли можно назначать самим , на div допусти button )
 // const input = screen.getByPlaceholderText(/input value.../i);поиск по placeholder
 // expect(helloWorld).toBeInTheDocument() проверяем наличие элемента в DOM
-// методы screen findBy/All(асинхроннеы), getBy/All(используеться для 100% получение какогото элемента иначе вылезит ошибка), queryBy/All(обычно используеться для уточнения что элемнта нет на странице, не пробрасывает ошибку если не нашел элемент)
+// методы screen findBy/All(асинхроннеы), getBy/All(используеться для 100% получение какогото элемента иначе вылезит ошибка), queryBy/All(обычно используеться для уточнения что элемнта нет на странице, не пробрасывает ошибку если не нашел элемент, вовзравает null)
 // const helloWorldElem = screen.queryByText(/Hello2/i); expect(helloWorldElem).toBeNull(); проверяем что такого элемента на страницы нет
-// screen.debug();-вывод HTML дерева
+// screen.debug();-выводит HTML разметку которая сгенерировалась после того как мы отрендеривали компонент
 // expect(helloWorldElem).toHaveStyle({ color: 'red' }); проверка что у элемента есть стили
 //  expect(screen.queryByTestId('toggle-element')) .toBeInTheDocument(); проверяем наличие элемента на странице, передовая в expect найденный элемент по data-testid="toggle-element", чтобы получать всгда актуальное состояние
 // fireEvent.click(btn); с помощью объект fireEvent мы можем вызывать события на элементах (искуственное событие)
@@ -4223,7 +4271,7 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 
 describe('TEST APP', () => {
-  test('renders learn react', async () => {
+  test('renders learn react/ проверка наличия элемента на странице асинхронная функция', async () => {
     render(<App />);
     // const helloWorldElem = screen.queryByText(/Hello2/i);
     // expect(helloWorldElem).toBeNull();
@@ -4234,7 +4282,7 @@ describe('TEST APP', () => {
     screen.debug();
   });
 
-  test('renders learn react link', () => {
+  test('renders learn react link/ проверка наличия элемента на странице', () => {
     render(<App />);
     const helloWorldElem = screen.getByText(/Hello World/i);
     const button = screen.getByRole('button');
@@ -4244,7 +4292,7 @@ describe('TEST APP', () => {
     expect(input).toBeInTheDocument();
   });
 
-  test('click button', () => {
+  test('click button/ проверка кнопки', () => {
     render(<App />);
     const btn = screen.getByTestId('toggle-btn');
     expect(screen.queryByTestId('toggle-element')).toBeNull();
@@ -4254,11 +4302,11 @@ describe('TEST APP', () => {
     expect(screen.queryByTestId('toggle-element')).toBeNull();
   });
 
-  test('change input', () => {
+  test('change input/ проверка связываемого инпута', () => {
     render(<App />);
     const input = screen.getByTestId('inputElement');
     expect(screen.getByTestId('div-element')).toContainHTML('');
-    fireEvent.change(input, { target: { value: '2' } });
+    fireEvent.change(input, { target: { value: '2' } }); // вызываем событие change на input и передаем новое значение
     expect(input).toHaveValue('2');
     expect(screen.getByTestId('div-element')).toHaveTextContent('2');
   });
@@ -4269,7 +4317,7 @@ describe('TEST APP', () => {
 import { MemoryRouter } from 'react-router-dom';
 
 describe('Router', () => {
-  test('Router test', async () => {
+  test('Router test/ проверка маршрутизации', async () => {
     render(
       <MemoryRouter>
         <App />
@@ -4283,7 +4331,7 @@ describe('Router', () => {
   });
 });
 
-test('check redirect to details page', async () => {
+test('check redirect to details page /проверка перехода на страницу с деталями', async () => {
   axios.get.mockResolvedValue(response);
   render(
     <MemoryRouter initialEntries={['/users']}>
@@ -4302,7 +4350,7 @@ test('check redirect to details page', async () => {
   //  expect(window.location.pathname).toBe('/users/1');
 });
 
-// С созданием хелреа и выноса render весь туда, также вынесли router в компонент AppRouter
+// С созданием хелперов  и выноса render весь туда, также вынесли router в компонент AppRouter
 renderWithRouter.js;
 
 import { MemoryRouter } from 'react-router-dom';
@@ -4320,7 +4368,7 @@ export const renderWithRouter = (component, initialRoute = '/') => {
 
 Users.test.js;
 
-test('check redirect to details page', async () => {
+test('check redirect to details page/ проверка перехода на страницу с деталями', async () => {
   axios.get.mockResolvedValue(response);
   // renderWithRouter(null, '/users');
   renderWithRouter(<Users />);
@@ -4334,19 +4382,19 @@ test('check redirect to details page', async () => {
 
 // Тестируем Navbar , на нажатие на ссылку и переход на соответствующую страницу
 describe('Test-Navbar', () => {
-  test('main link', () => {
+  test('main link/ переход на главную страницу', () => {
     renderWithRouter(<Navbar />);
     const mainLink = screen.getByTestId('main-link');
     fireEvent.click(mainLink);
     expect(screen.getByTestId('main-page')).toBeInTheDocument();
   });
-  test('about link', () => {
+  test('about link/ переход на страницу about', () => {
     renderWithRouter(<Navbar />);
     const aboutLink = screen.getByTestId('about-link');
     fireEvent.click(aboutLink);
     expect(screen.getByTestId('about-page')).toBeInTheDocument();
   });
-  test('users link', () => {
+  test('users link/ переход на страницу users', () => {
     renderWithRouter(<Navbar />);
     const userLink = screen.getByTestId('users-link');
     fireEvent.click(userLink);
@@ -4354,7 +4402,11 @@ describe('Test-Navbar', () => {
   });
 });
 
-// Типизация redux toolkit
+// Тестирование redux toolkit
+
+-проверка селекторов
+-проверка редьюсеров
+
 store.js;
 
 export const store = configureStore({
@@ -4362,5 +4414,78 @@ export const store = configureStore({
   preloadedState: { counter: { value: 10000 } }, // начально значение
 });
 
+// Тестирование selectorov
 
+import { selectValue } from './counterSelector';
+
+describe('TEST selector', () => {
+  test('Проверяем корректность работы селектора при пустом state', () => {
+    expect(selectValue({})).toBe(0);
+  });
+  test('Проверяем корректность работы селектора при заполненном state', () => {
+    expect(selectValue({ counter: { value: 10 } })).toBe(10);
+  });
+});
+
+// Тестирование reducer
+
+import counterSlice, { increment, decrement } from './counterSlice';
+
+describe('TEST slice', () => {
+  test('increment', () => {
+    expect(counterSlice({ value: 0 }, increment())).toEqual({ value: 1 });
+  });
+  test('decrement', () => {
+    expect(counterSlice({ value: 1 }, decrement())).toEqual({ value: 0 });
+  });
+  test('не передаем state', () => {
+    expect(counterSlice(undefined, decrement())).toEqual({ value: -1 });
+    expect(counterSlice(undefined, increment())).toEqual({ value: 1 });
+  });
+});
+
+// Тетсирование redux
+
+import { fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { createReduxStore } from '../../store/store';
+import { renderWithRedux } from '../../tests/helpers/renderWithRedux';
+import Counter from './Counter';
+import { renderTestApp } from '../../tests/helpers/renderTestApp';
+
+describe('Counter test', () => {
+  test('increment button', async () => {
+    render(
+      // Благодоря функции createReduxStore() передаем начальное состояние
+      <Provider store={createReduxStore({ counter: { value: 10 } })}>
+        <Counter />
+      </Provider>,
+    );
+    expect(screen.getByText('10')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('increment-btn'));
+    expect(screen.getByTestId('value-title')).toHaveTextContent('11');
+  });
+
+  test('decrement button', async () => {
+    // рендерим компонент с помощью renderWithRedux (helper)
+    renderWithRedux(<Counter />, { counter: { value: 10 } });
+
+    const decrementBtn = screen.getByTestId('decrement-btn');
+    expect(decrementBtn).toBeInTheDocument();
+    fireEvent.click(decrementBtn);
+    expect(screen.getByTestId('value-title')).toHaveTextContent('9');
+  });
+  test('decrement button with redux', async () => {
+    // рендерим компонент с помощью renderTestApp (helper) можем уазываеть путь и начальное состояние
+    renderTestApp(null, {
+      route: '/counter',
+      initialState: { counter: { value: 10 } },
+    });
+
+    const decrementBtn = screen.getByTestId('decrement-btn');
+    expect(decrementBtn).toBeInTheDocument();
+    fireEvent.click(decrementBtn);
+    expect(screen.getByTestId('value-title')).toHaveTextContent('9');
+  });
+});
 ```

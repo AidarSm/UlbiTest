@@ -8,8 +8,9 @@ const Counter = () => {
   const dispatch = useDispatch();
   return (
     <div>
-      <h1>{value}</h1>
+      <h1 data-testid="value-title">{value}</h1>
       <button
+        data-testid="decrement-btn"
         onClick={() => {
           dispatch(decrement());
         }}
@@ -17,6 +18,7 @@ const Counter = () => {
         decrement
       </button>
       <button
+        data-testid="increment-btn"
         onClick={() => {
           dispatch(increment());
         }}
